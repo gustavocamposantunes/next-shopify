@@ -5,8 +5,14 @@ type SutTypes = {
   graphql: GraphQlClientAdapter
 }
 
-const makeSut = (endpoint = faker.internet.url()): SutTypes => {
-  const graphql = new GraphQlClientAdapter(endpoint)
+const makeSut = (
+  endpoint = faker.internet.url(),
+  headers: object = {
+    token: '',
+    contentType: ''
+  }
+): SutTypes => {
+  const graphql = new GraphQlClientAdapter(endpoint, headers)
   return {
     graphql
   }
@@ -33,5 +39,16 @@ describe("GraphQlClientAdapter", () => {
     const { graphql } = makeSut(endpoint)
 
     expect(graphql.endpoint).toBe(endpoint)
+  })
+
+  it("Should correctly set headers when instantiating GraphQlClientAdapter", () => {
+    const headers = {
+      token: '',
+      contentType: ''
+    }
+
+    const { graphql } = makeSut("", headers)
+
+    expect(graphql.headers).toBe(headers)
   })
 })
