@@ -10,6 +10,7 @@
     "husky:init": "npx husky init",
     "prepare": "husky",
     "test": "jest",
+    "test:watch": "jest --watch",
     "check": "ncu",
     "check:update": "ncu -u",
     "check:interactive": "ncu --interactive"
