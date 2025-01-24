@@ -12,12 +12,13 @@
     "test": "jest",
     "check": "ncu",
     "check:update": "ncu -u",
-    "check:interactive": "ncu --interactive",
+    "check:interactive": "ncu --interactive"
   },
   "dependencies": {
     "next": "15.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.6.0",
