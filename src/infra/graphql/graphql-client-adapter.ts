@@ -1,14 +1,16 @@
+import { GraphQLClient } from "graphql-request"
+
 export class GraphQlClientAdapter {
+  private readonly graphqlClient: GraphQLClient;
+
   constructor (
     public readonly endpoint: string,
-    public readonly headers: object
-  ) {}
+    public readonly headers: HeadersInit
+  ) {
+    this.graphqlClient = new GraphQLClient(this.endpoint, { headers: this.headers });
+  }
 
   async request(query: string) {
-    Promise.resolve({
-      data: {
-        result: `${query}`
-      }
-    })
+    return this.graphqlClient.request(query);
   }
 }
