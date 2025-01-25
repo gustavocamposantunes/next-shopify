@@ -53,4 +53,16 @@ describe("GraphQlClientAdapter", () => {
 
     expect(graphql.headers).toBe(headers)
   })
+
+  it("Should return the correct response on success graphql.request", async () => {
+    const query = faker.lorem.sentence()
+
+    const { graphql } = makeSut()
+
+    jest.spyOn(graphql, "request").mockResolvedValueOnce({ result: query })
+
+    const response = await graphql.request(query)
+
+    expect(response).toEqual({ result: query })
+  })
 })
