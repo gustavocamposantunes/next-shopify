@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker"
+import { jest } from "@jest/globals"
 import { GraphQlClientAdapter } from "./graphql-client-adapter"
 
 type SutTypes = {
@@ -7,12 +8,13 @@ type SutTypes = {
 
 const makeSut = (
   endpoint = faker.internet.url(),
-  headers: object = {
-    token: '',
-    contentType: ''
+  headers: HeadersInit = {
+    'token': '',
+    'contentType': ''
   }
-): SutTypes => {
+): SutTypes => {  
   const graphql = new GraphQlClientAdapter(endpoint, headers)
+  
   return {
     graphql
   }
@@ -24,7 +26,7 @@ describe("GraphQlClientAdapter", () => {
     
     const { graphql } = makeSut()
 
-    const requestSpy = jest.spyOn(graphql, "request");
+    const requestSpy = jest.spyOn(graphql, "request")
 
     graphql.request(query)
 
@@ -43,8 +45,8 @@ describe("GraphQlClientAdapter", () => {
 
   it("Should correctly set headers when instantiating GraphQlClientAdapter", () => {
     const headers = {
-      token: '',
-      contentType: ''
+      'token': '',
+      'contentType': ''
     }
 
     const { graphql } = makeSut("", headers)
