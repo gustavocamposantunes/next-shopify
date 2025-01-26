@@ -59,10 +59,21 @@ describe("GraphQlClientAdapter", () => {
 
     const { graphql } = makeSut()
 
-    jest.spyOn(graphql, "request").mockResolvedValueOnce({ result: query })
+    jest.spyOn(graphql, "request").mockResolvedValueOnce({ result: query, status: 200 })
 
     const response = await graphql.request(query)
 
-    expect(response).toEqual({ result: query })
+    expect(response).toEqual({ result: query, status: 200 })
+  })
+
+  it("Should throw the correct error on graphql.request", async () => {
+    const query = faker.lorem.sentence()
+
+    const { graphql } = makeSut()
+
+    const mockError = { result: query, status: 404 }
+    jest.spyOn(graphql, "request").mockRejectedValueOnce(mockError)
+
+    expect(graphql.request(query)).rejects.toEqual(mockError)
   })
 })
