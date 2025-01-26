@@ -1,19 +1,14 @@
 import { faker } from "@faker-js/faker"
 import { jest } from "@jest/globals"
 import { GraphQlClientAdapter } from "./graphql-client-adapter"
+import { gql } from "graphql-request"
 
 type SutTypes = {
   graphql: GraphQlClientAdapter
 }
 
-const makeSut = (
-  endpoint = faker.internet.url(),
-  headers: HeadersInit = {
-    'token': '',
-    'contentType': ''
-  }
-): SutTypes => {  
-  const graphql = new GraphQlClientAdapter(endpoint, headers)
+const makeSut = (): SutTypes => {  
+  const graphql = new GraphQlClientAdapter()
   
   return {
     graphql
@@ -21,59 +16,54 @@ const makeSut = (
 }
 
 describe("GraphQlClientAdapter", () => {
-  it("Should call request with the correct query", () => {
-    const query = faker.lorem.sentence()
+  it("Should call request with the correct values", () => {
+    const url = faker.internet.url()
+    const document = gql`{
+      document: ${ faker.lorem.sentence() }
+    }`
+    const RequestHeaders = {
+      'token': '',
+      'contentType': ''
+    }
     
     const { graphql } = makeSut()
 
     const requestSpy = jest.spyOn(graphql, "request")
 
-    graphql.request(query)
+    const requestParams = { url, document, RequestHeaders }
+    graphql.request(requestParams)
 
-    expect(requestSpy).toHaveBeenCalledWith(query)
+    expect(requestSpy).toHaveBeenCalledWith(requestParams)
 
     requestSpy.mockRestore();
   })
 
-  it("Should correctly set the endpoint when instantiating GraphQlClientAdapter", () => {
-    const endpoint = faker.internet.url()
-
-    const { graphql } = makeSut(endpoint)
-
-    expect(graphql.endpoint).toBe(endpoint)
-  })
-
-  it("Should correctly set headers when instantiating GraphQlClientAdapter", () => {
-    const headers = {
-      'token': '',
-      'contentType': ''
-    }
-
-    const { graphql } = makeSut("", headers)
-
-    expect(graphql.headers).toBe(headers)
-  })
-
   it("Should return the correct response on success graphql.request", async () => {
-    const query = faker.lorem.sentence()
+    const url = faker.internet.url()
+    const document = gql`{
+      document: ${ faker.lorem.sentence() }
+    }`
 
     const { graphql } = makeSut()
 
-    jest.spyOn(graphql, "request").mockResolvedValueOnce({ result: query, status: 200 })
+    jest.spyOn(graphql, "request").mockResolvedValueOnce({ result: document, status: 200 })
 
-    const response = await graphql.request(query)
+    const response = await graphql.request({ url, document })
 
-    expect(response).toEqual({ result: query, status: 200 })
+    expect(response).toEqual({ result: document, status: 200 })
   })
 
   it("Should throw the correct error on graphql.request", async () => {
-    const query = faker.lorem.sentence()
+    const url = faker.internet.url()
+    const document = gql`{
+      document: ${ faker.lorem.sentence() }
+    }`
 
     const { graphql } = makeSut()
 
-    const mockError = { result: query, status: 404 }
+    const mockError = { result: document, status: 404 }
     jest.spyOn(graphql, "request").mockRejectedValueOnce(mockError)
 
-    expect(graphql.request(query)).rejects.toEqual(mockError)
+    expect(graphql.request({ url, document} )).rejects.toEqual(mockError)
   })
 })

@@ -1,19 +1,11 @@
-import { GraphQLRequest, GraphQLResponse, GraphQLSuccessResponse } from "@/data/protocols/graphql";
-import { GraphQLClient } from "graphql-request"
+import { GraphQLRequest, GraphQLRequestParams, GraphQLResponse, GraphQLSuccessResponse } from "@/data/protocols/graphql";
+import { request } from "graphql-request"
 
 export class GraphQlClientAdapter implements GraphQLRequest {
-  private readonly graphqlClient: GraphQLClient;
 
-  constructor (
-    public readonly endpoint: string,
-    public readonly headers: HeadersInit
-  ) {
-    this.graphqlClient = new GraphQLClient(this.endpoint, { headers: this.headers });
-  }
-
-  async request(query: string): Promise<GraphQLResponse> {
+  async request(params: GraphQLRequestParams): Promise<GraphQLResponse> {
     try {
-      const response = await this.graphqlClient.request(query);
+      const response = await request(params.url, params.document);
       return { data: response } as GraphQLSuccessResponse;
     } catch (error: any) {
       return {
