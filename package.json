@@ -10,7 +10,7 @@
     "husky:init": "npx husky init",
     "prepare": "husky",
     "test": "jest",
-    "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
+    "test:watch": "NODE_OPTIONS='--experimental-vm-modules --trace-deprecation --trace-warnings' jest --watch",
     "check": "ncu",
     "check:update": "ncu -u",
     "check:interactive": "ncu --interactive"
