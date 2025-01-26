@@ -1,6 +1,7 @@
-import { GraphQLClient, GraphQLResponse } from "graphql-request"
+import { GraphQLRequest, GraphQLResponse, GraphQLSuccessResponse } from "@/data/protocols/graphql";
+import { GraphQLClient } from "graphql-request"
 
-export class GraphQlClientAdapter {
+export class GraphQlClientAdapter implements GraphQLRequest {
   private readonly graphqlClient: GraphQLClient;
 
   constructor (
@@ -10,10 +11,10 @@ export class GraphQlClientAdapter {
     this.graphqlClient = new GraphQLClient(this.endpoint, { headers: this.headers });
   }
 
-  async request(query: string): Promise<GraphQLResponse<object> | unknown> {
+  async request(query: string): Promise<GraphQLResponse> {
     try {
-
-      return await this.graphqlClient.request(query).then(resp => resp).catch(error => error);
+      const response = await this.graphqlClient.request(query);
+      return { data: response } as GraphQLSuccessResponse;
     } catch (error: any) {
       return {
         result: error.response?.data || null,
