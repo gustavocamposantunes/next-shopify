@@ -1,4 +1,4 @@
-import { GraphQLClient } from "graphql-request"
+import { GraphQLClient, GraphQLResponse } from "graphql-request"
 
 export class GraphQlClientAdapter {
   private readonly graphqlClient: GraphQLClient;
@@ -10,7 +10,15 @@ export class GraphQlClientAdapter {
     this.graphqlClient = new GraphQLClient(this.endpoint, { headers: this.headers });
   }
 
-  async request(query: string) {
-    return this.graphqlClient.request(query);
+  async request(query: string): Promise<GraphQLResponse<object> | unknown> {
+    try {
+
+      return await this.graphqlClient.request(query).then(resp => resp).catch(error => error);
+    } catch (error: any) {
+      return {
+        result: error.response?.data || null,
+        status: error.response?.status || 500,
+      };
+    }
   }
 }
